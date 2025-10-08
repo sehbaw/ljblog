@@ -1,0 +1,160 @@
+---
+import BaseLayout from '../components/BaseLayout.astro';
+
+// Get all blog posts
+const posts = await Astro.glob('../content/blog/*.md');
+const sortedPosts = posts.sort((a, b) => 
+  new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime()
+);
+---
+
+<BaseLayout title="My LiveJournal">
+  <div class="main-layout">
+     Main Stream 
+    <div class="post-stream">
+      {sortedPosts.map(post => {
+        const postDate = new Date(post.frontmatter.date);
+        const formattedDate = postDate.toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        const formattedTime = postDate.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        
+        return (
+          <article class="post-card">
+             Post Header 
+            <header class="post-header">
+              <div style="display: flex; align-items: start; justify-content: space-between;">
+                <div style="flex: 1;">
+                  <h2 class="post-title">
+                    <a href={post.url}>{post.frontmatter.title}</a>
+                  </h2>
+            
+                </div>
+                <div style="margin-left: 1rem;">
+                  <img src="/placeholder.svg?height=40&width=40" alt="User avatar" style="width: 2.5rem; height: 2.5rem; border-radius: 50%; border: 2px solid #93c5fd;">
+                </div>
+              </div>
+            </header>
+            
+             Post Content 
+            <div class="post-content">
+              <div set:html={post.compiledContent()} />
+            </div>
+              <div class="post-meta">
+                    <p><strong>📅 {formattedDate}</strong> at {formattedTime}</p>
+                   {post.frontmatter.mood && (
+                      <p><strong>Current mood:</strong> <span class="italic">{post.frontmatter.mood}</span></p>
+                    )}
+                    {post.frontmatter.music && (
+                      <p><strong>Current music:</strong> <span class="italic">{post.frontmatter.music}</span> 🎵</p>
+                    )}
+                  </div>
+             Post Footer 
+            <footer class="post-footer">
+              {post.frontmatter.tags && (
+                <div class="post-tags">
+                  {post.frontmatter.tags.map(tag => (
+                    <a href={`/tags/${tag}`} class="tag">#{tag}</a>
+                  ))}
+                </div>
+              )}
+              
+               Post Actions 
+              <div class="post-actions">
+                <a href={`${post.url}#comments`}>💬 <span>3 comments</span></a>
+                <button>❤️ <span>Add to memories</span></button>
+                <button>🔗 <span>Link</span></button>
+              </div>
+            </footer>
+          </article>
+        );
+      })}
+      
+       Load More 
+      <div class="load-more">
+        <button class="btn-secondary">Load Earlier Entries</button>
+      </div>
+    </div>
+    
+     Sidebar 
+    <div class="sidebar">
+       User Info Card 
+      <div class="sidebar-card purple">
+        <div class="user-profile">
+          <img src="/placeholder.svg?height=80&width=80" alt="Profile" class="user-avatar">
+          <h3 class="user-name">your_username</h3>
+          <p class="user-location">Portland, OR</p>
+        </div>
+        
+
+    <div class="stats-box">
+          <h5>Current Status</h5>
+        <!--<p style="font-size: 0.75rem;"><strong>Mood:</strong>contemplative</p>
+          <p style="font-size: 0.75rem;"><strong>Music:</strong> Bright Eyes</p>
+        </div>-->
+
+        <div class="stats-box">
+          <h5>Journal Stats</h5>
+          <ul class="stats-list">
+            <li><strong>Entries:</strong> {sortedPosts.length}</li>
+            <li><strong>Comments:</strong> 156</li>
+            <li><strong>Memories:</strong> 23</li>
+            <li><strong>Friends:</strong> 42</li>
+          </ul>
+        </div>
+        
+      
+        
+        <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid #e9d5ff;">
+          <a href="/profile" class="btn-primary" style="display: block; text-align: center;">View Full Profile</a>
+        </div>
+      </div>
+      
+       Quick Navigation 
+      <div class="sidebar-card green">
+        <h4>Quick Links</h4>
+        <ul class="nav-list">
+          <li><a href="/archive">📚 Archive</a></li>
+          <li><a href="/memories">⭐ Memories</a></li>
+          <li><a href="/friends">👥 Friends</a></li>
+          <li><a href="/tags">🏷️ Tags</a></li>
+          <li><a href="/calendar">📅 Calendar</a></li>
+        </ul>
+      </div>
+      
+       Recent Comments 
+      <div class="sidebar-card yellow">
+        <h4>Recent Comments</h4>
+        <div>
+          <div class="comment-item">
+            <p class="comment-author">sarah_writes</p>
+            <p class="comment-post">on "Weekend Adventures"</p>
+            <p class="comment-text">"Sounds amazing! 💕"</p>
+          </div>
+          <div class="comment-item">
+            <p class="comment-author">music_lover_23</p>
+            <p class="comment-post">on "New Music Discovery"</p>
+            <p class="comment-text">"I love this band too!"</p>
+          </div>
+        </div>
+        <a href="/comments" style="font-size: 0.75rem; color: #d97706;">View all comments →</a>
+      </div>
+      
+       Tag Cloud 
+      <div class="sidebar-card red">
+        <h4>Popular Tags</h4>
+        <div class="tag-cloud">
+          {['personal', 'music', 'photography', 'travel', 'books', 'coffee', 'friends', 'work', 'weekend'].map(tag => (
+            <a href={`/tags/${tag}`} class="tag">#{tag}</a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

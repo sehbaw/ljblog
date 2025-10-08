@@ -1,0 +1,68 @@
+---
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "My LiveJournal-style blog" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title}</title>
+  <meta name="description" content={description}>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Verdana:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles/global.css">
+</head>
+<body>
+   Top Navigation Bar 
+  <nav class="nav-bar">
+    <div class="container">
+      <div class="nav-content">
+        <div style="display: flex; align-items: center; gap: 1.5rem;">
+          <a href="/" class="nav-brand">📖 MyLiveJournal</a>
+          <div class="nav-links">
+            <a href="/">Recent Entries</a>
+            <a href="/friends">Friends</a>
+            <a href="/archive">Archive</a>
+            <a href="/memories">Memories</a>
+          </div>
+        </div>
+        
+        <div class="nav-actions">
+          <a href="/post/new" class="btn-primary">✏️ Update Journal</a>
+          <a href="/profile">
+            <img src="/placeholder.svg?height=32&width=32" alt="Profile" class="profile-avatar">
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="container">
+    <main>
+      <slot />
+    </main>
+  </div>
+  
+   Footer 
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <p>&copy; 2025 MyLiveJournal. Powered by Astro with 💜</p>
+        <div class="footer-links">
+          <a href="/about">About</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
+          <a href="/help">Help</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
